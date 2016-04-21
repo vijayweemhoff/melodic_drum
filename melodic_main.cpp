@@ -1,10 +1,29 @@
 #include <iostream>
+#include "osc.h"
 
 using namespace std;
 
 int numElements=4;
 int* lijst= new int[numElements];
 
+int velocityOSC;
+
+// subclass OSC into a local class so we can provide our own callback
+class localOSC : public OSC
+{
+  int realcallback(const char *path,const char *types,lo_arg **argv,int argc)
+  {
+  string msgpath=path;
+
+    //cout << "path: " << msgpath << endl;
+    if(!msgpath.compare("/velocity")){
+      velocityOSC = argv[0]->i;
+      //cout << "Message: " << velocityOSC << fixed << std::endl;
+    } // if
+
+    return 0;
+  } // realcallback()
+};
 
 void inputLijst()
 {
@@ -27,20 +46,37 @@ inputLijst();
 cout << "processing......" << std::endl;
 outputLijst();
 
-int x=0;
-int velocity;
+
 
 cout << "" << std::endl;
 
+//OSC gebeuren
+  localOSC osc;
+  string serverport="6666";
+
+    osc.init(serverport);
+    osc.set_callback("/velocity","i");
+
+    osc.start();
+    cout << "Listening on port " << serverport << endl;
+//einde OSC gebeuren
+
+int x=0;
+
 while(1)
 {
-  cin >> velocity;
-    if(velocity>0)
+  //cout << params[0] << std::endl;
+    if(velocityOSC>0)
     {
+      cout << "" << std::endl;
       cout << lijst[x] << std::endl;
+
       x++;
+
         if(x>=numElements)
         x=0;
+        
+      velocityOSC=0;
     }
 }
 

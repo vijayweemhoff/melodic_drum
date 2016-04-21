@@ -3,7 +3,7 @@ CFLAGS = -I/usr/local/include -Wall
 LDFLAGS= -L/usr/local/lib -lportaudio -lpthread -llo
 
 
-OBJ= melodic_main.o
+OBJ= melodic_main.o osc.o
 
 all: melodic_main
 
