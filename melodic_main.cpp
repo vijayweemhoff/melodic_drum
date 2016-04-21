@@ -12,6 +12,7 @@ int* pitches= new int[aantal];
 int velocityOSC;
 int pitchOSC;
 int showPitch;
+int clearList;
 
 // subclass OSC into a local class so we can provide our own callback
 class localOSC : public OSC
@@ -32,6 +33,10 @@ class localOSC : public OSC
     if(!msgpath.compare("/show_pitches")){
        showPitch = argv[0]->i;
        //cout << "Yes show me pitches" << showPitch << fixed << std::endl;
+    } // if
+    if(!msgpath.compare("/clear_list")){
+       clearList = argv[0]->i;
+       cout << "Clear list " << clearList << fixed << std::endl;
     } // if
 
     return 0;
@@ -82,6 +87,7 @@ cout << "" << std::endl;
     osc.set_callback("/velocity","i");
     osc.set_callback("/kslider_pitch","i");
     osc.set_callback("/show_pitches","i");
+    osc.set_callback("/clear_list","i");
 
     osc.start();
     cout << "Listening on port " << serverport << endl;
@@ -108,11 +114,19 @@ while(1)
     showPitch=0;
   }
 
+  if(clearList==1)
+  {
+    aantal=0;
+    y=0;
+    clearList=0;
+    welkePitch=0;
+  }
+
   //cout << params[0] << std::endl;
     if(velocityOSC>0)
     {
       cout << "" << std::endl;
-      cout << lijst[x] << std::endl;
+      //cout << lijst[x] << std::endl;
       cout << pitches[welkePitch] << std::endl;
 
       x++;
